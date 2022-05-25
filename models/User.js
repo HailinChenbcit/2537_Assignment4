@@ -8,7 +8,10 @@ const userSchema = new Schema(
     lastname: String,
     email: String,
     password: String,
-    admin: Boolean,
+    admin: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     _id: true,

@@ -10,6 +10,7 @@ const UserModel = require("./models/User");
 const eventModel = require("./models/TimeEvent");
 const cartModel = require("./models/Cart");
 const orderModel = require("./models/Order");
+app.use(bodyparser.json());
 
 app.use(
   bodyparser.urlencoded({
@@ -28,23 +29,71 @@ app.use(
 );
 
 // Middleware
+// print out user information in session
+// app.use((req, res, next) => {
+//   console.log(req.session);
+//   console.log(req.session.user);
+//   console.log(req.session.authenticated);
+//   next();
+// });
+
 function isAuth(req, res, next) {
   if (req.sessionID && req.session.authenticated) {
-    // console.log(req.sessionID);
     next();
-  } else {
-    res.redirect("/login");
   }
+  res.redirect("/login");
 }
 
+function isAdmin(req, res, next) {
+  if (req.user.admin) {
+    return next();
+  }
+  res.redirect("/home");
+}
+
+// Mongo Atlas Connect
 mongoose
-.connect("mongodb+srv://hchen256:comp1537@cluster0.74n5t.mongodb.net/timelineDB?retryWrites=true&w=majority", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    "mongodb+srv://hchen256:comp1537@cluster0.74n5t.mongodb.net/timelineDB?retryWrites=true&w=majority",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then((res) => {
     console.log("MongoDB connected");
   });
+
+/*
+  admin page
+*/
+app.get("/dashboard", isAuth, isAdmin, async (req, res) => {
+  const users = await UserModel.find({});
+  res.render("dashboard", { users, currentUser: req.user.email });
+});
+
+app.get("/dashboard/:email", isAuth, isAdmin, (req, res) => {
+  const { email } = req.params;
+  if (email != req.user.email) {
+    User.findOneAndUpdate(
+      {
+        email: email,
+      },
+      [
+        {
+          $set: { admin: { $not: "$admin" } },
+        },
+      ],
+      (err, resp) => {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send("OK");
+        }
+      }
+    );
+  }
+});
 
 /*
  User Login Logout
@@ -55,7 +104,7 @@ app.get("/", function (req, res) {
 // Login
 app.get("/login", function (req, res) {
   if (req.sessionID && req.session.authenticated) {
-    res.redirect("timeline")
+    res.redirect("timeline");
   } else {
     res.render("login");
   }
