@@ -29,26 +29,26 @@ app.use(
 );
 
 // Middleware
-// print out user information in session
-// app.use((req, res, next) => {
-//   console.log(req.session);
-//   console.log(req.session.user);
-//   console.log(req.session.authenticated);
-//   next();
-// });
+app.use((req, res, next) => {
+  console.log(req.session);
+  console.log(req.session.user);
+  next();
+});
 
 function isAuth(req, res, next) {
   if (req.sessionID && req.session.authenticated) {
     next();
-  }
-  res.redirect("/login");
+  } else {
+    res.redirect("/login");
+  } 
 }
 
 function isAdmin(req, res, next) {
-  if (req.user.admin) {
+  if (req.session.user.admin) {
     return next();
+  } else {
+    res.redirect("/home");
   }
-  res.redirect("/home");
 }
 
 // Mongo Atlas Connect
@@ -69,12 +69,12 @@ mongoose
 */
 app.get("/dashboard", isAuth, isAdmin, async (req, res) => {
   const users = await UserModel.find({});
-  res.render("dashboard", { users, currentUser: req.user.email });
+  res.render("dashboard", { users, currentUser: req.session.user.email });
 });
 
 app.get("/dashboard/:email", isAuth, isAdmin, (req, res) => {
   const { email } = req.params;
-  if (email != req.user.email) {
+  if (email != req.session.user.email) {
     User.findOneAndUpdate(
       {
         email: email,
