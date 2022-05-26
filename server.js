@@ -75,7 +75,7 @@ app.get("/dashboard", isAuth, isAdmin, async (req, res) => {
 app.get("/dashboard/:email", isAuth, isAdmin, (req, res) => {
   const { email } = req.params;
   if (email != req.session.user.email) {
-    User.findOneAndUpdate(
+    UserModel.findOneAndUpdate(
       {
         email: email,
       },
@@ -88,7 +88,7 @@ app.get("/dashboard/:email", isAuth, isAdmin, (req, res) => {
         if (err) {
           res.send(err);
         } else {
-          res.send("OK");
+          res.redirect("/dashboard");
         }
       }
     );
