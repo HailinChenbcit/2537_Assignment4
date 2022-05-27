@@ -5,11 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <title>Assignment3</title>
+    <title>Game</title>
     <link rel="stylesheet" href="/styles/style.css" />
     <link rel="stylesheet" href="/styles/game.css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <script src="scripts/game.js"></script>
+    <style>
+      main {
+        display: grid;
+        grid-template-rows: auto auto;
+      }
+    </style>
   </head>
 
   <body>
@@ -24,8 +30,16 @@
       <a href="/shoppingcart"> Cart </a>
       <a href="/game"> Game </a>
     </nav>
-
     <main>
+      <!-- 
+    <div>
+      <label for="level">Choose Difficulty</label>
+      <select name="level" id="level">
+      <option value="4">easy</option>
+      <option value="6">medium</option>
+      <option value="12">hard</option>
+    </div> -->
+
       <div id="game_grid">
         <div class="card">
           <img id="img1" class="front_face" src="1.png" alt="" />

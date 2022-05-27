@@ -67,7 +67,7 @@ mongoose
 /**
  * Game Route
  */
-app.get("/game", isAuth, (req, res) => {
+app.get("/game", (req, res) => {
   res.render("game");
 });
 /*
