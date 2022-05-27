@@ -108,6 +108,33 @@ app.get("/dashboard/remove/:email", isAuth, isAdmin, (req, res) => {
   });
 });
 
+// Display user info editing page
+app.get("/edit/:email", isAuth, async function (req, res) {
+  const userInfo = await UserModel.find({
+    _id: req.session.user._id,
+  }).exec();
+  const details = {
+    firstname: userInfo[0].firstname,
+    email: userInfo[0].email,
+  };
+  res.render("edit", { details });
+});
+
+// Edit user information
+app.post("/edit/:name/:email", isAuth, async function (req, res) {
+  const { name, email } = req.params;
+
+  await UserModel.findByIdAndUpdate(
+    req.session.user._id,
+    {
+      email: email,
+      firstname: name,
+    },
+    { new: true }
+  );
+  res.redirect("/timeline");
+});
+
 /*
  User Login Logout
 */
@@ -292,12 +319,6 @@ app.get("/timeline/remove/:id", isAuth, function (req, res) {
       console.log("Data " + data);
     }
   });
-});
-
-// Edit user information
-app.get("/edit/:email", isAuth, function (req, res) {
-  const { email } = req.params;
-  res.render("edit");
 });
 
 const https = require("https");
