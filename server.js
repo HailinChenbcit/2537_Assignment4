@@ -64,6 +64,12 @@ mongoose
     console.log("MongoDB connected");
   });
 
+/**
+ * Game Route
+ */
+app.get("/game", isAuth, (req, res) => {
+  res.render("game");
+});
 /*
   admin page
 */
