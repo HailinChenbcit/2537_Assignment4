@@ -40,7 +40,7 @@ function isAuth(req, res, next) {
     next();
   } else {
     res.redirect("/login");
-  } 
+  }
 }
 
 function isAdmin(req, res, next) {
@@ -72,6 +72,7 @@ app.get("/dashboard", isAuth, isAdmin, async (req, res) => {
   res.render("dashboard", { users, currentUser: req.session.user.email });
 });
 
+// Toggle admin priviledge
 app.get("/dashboard/:email", isAuth, isAdmin, (req, res) => {
   const { email } = req.params;
   if (email != req.session.user.email) {
@@ -93,6 +94,18 @@ app.get("/dashboard/:email", isAuth, isAdmin, (req, res) => {
       }
     );
   }
+});
+
+// Delete other account
+app.get("/dashboard/remove/:email", isAuth, isAdmin, (req, res) => {
+  const { email } = req.params;
+  UserModel.findOneAndDelete({ email: email }, function (err, data) {
+    if (err) {
+      console.log("Error " + err);
+    } else {
+      console.log("Data " + data);
+    }
+  });
 });
 
 /*
@@ -279,6 +292,12 @@ app.get("/timeline/remove/:id", isAuth, function (req, res) {
       console.log("Data " + data);
     }
   });
+});
+
+// Edit user information
+app.get("/edit/:email", isAuth, function (req, res) {
+  const { email } = req.params;
+  res.render("edit");
 });
 
 const https = require("https");

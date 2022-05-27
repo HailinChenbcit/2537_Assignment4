@@ -82,11 +82,17 @@
         <div>
           <p>email: <%=details.email %></p>
         </div>
-        <form action="/logout" method="POST">
-          <button>Logout</button>
-        </form>
+
         <form action="/dashboard" method="GET">
           <button>Dashboard</button>
+        </form>
+
+        <form action="/edit/<%=details.email %>" method="GET">
+          <button>Edit</button>
+        </form>
+
+        <form action="/logout" method="POST">
+          <button>Logout</button>
         </form>
       </div>
 
