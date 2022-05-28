@@ -12,8 +12,7 @@
     <script src="scripts/game.js"></script>
     <style>
       main {
-        display: grid;
-        grid-template-rows: auto auto;
+        justify-items: center;
       }
     </style>
   </head>
@@ -31,15 +30,16 @@
       <a href="/game"> Game </a>
     </nav>
     <main>
-      <!-- 
-    <div>
-      <label for="level">Choose Difficulty</label>
-      <select name="level" id="level">
-      <option value="4">easy</option>
-      <option value="6">medium</option>
-      <option value="12">hard</option>
-    </div> -->
-
+      <div>
+        <label for="level">Choose Difficulty</label>
+        <select id="level">
+          <option value="4">easy</option>
+          <option value="6">medium</option>
+          <option value="12">hard</option>
+        </select>
+      </div>
+      <br>
+      <div class="timer">30</div>
       <div id="game_grid">
         <div class="card">
           <img id="img1" class="front_face" src="1.png" alt="" />
