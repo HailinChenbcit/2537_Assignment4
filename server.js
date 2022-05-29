@@ -68,20 +68,7 @@ mongoose
  * Game Route
  */
 app.get("/game", isAuth, async (req, res) => {
-  const allActs = await eventModel
-    .find({
-      owner: req.session.user._id,
-    })
-    .exec();
-  const allEvents = allActs.map((event) => {
-    const userEvent = {
-      _id: event._id,
-      text: event.text,
-      time: event.time,
-    };
-    return userEvent;
-  });
-  res.render("game", {allEvents});
+  res.render("game");
 });
 /*
   admin page
@@ -152,6 +139,29 @@ app.post("/edit/:name/:email", isAuth, async function (req, res) {
     { new: true }
   );
   res.redirect("/timeline");
+});
+// admin add regular user page
+app.get("/adduser", isAuth, isAdmin, function (req, res) {
+  res.render("adduser");
+});
+// admin add regular user route
+app.post("/addnewuser", isAuth, isAdmin, async function (req, res) {
+  const { firstname, lastname, email, password } = req.body;
+  let user = await UserModel.findOne({ email });
+
+  if (user) {
+    return res.redirect("/register");
+  }
+
+  const hashedPsw = await bcrypt.hash(password, 12);
+  user = new UserModel({
+    firstname,
+    lastname,
+    email,
+    password: hashedPsw,
+  });
+  await user.save();
+  res.redirect("dashboard");
 });
 
 /*

@@ -32,7 +32,6 @@ function flipCard() {
   if (lockBoard) return;
   // prevent same card click twice
   if ($(this).find(".front_face")[0] === firstCard) return;
-
   $(this).toggleClass("flip");
   if (!cardHasBeenFlipped) {
     firstCard = $(this).find(".front_face")[0];
@@ -90,9 +89,7 @@ function insertGridEventToTheTimeLine(gridSize) {
       text: ` User changed the grid size to ${gridSize}`,
       time: `${time}`,
     },
-    success: function (r) {
-      // console.log(r);
-    },
+    success: function (r) {},
   });
 }
 
@@ -102,7 +99,7 @@ $(document).ready(function () {
   // Change grid size
   $("#level").change("#level", function () {
     gridSize = $(this).val();
-    insertGridEventToTheTimeLine(gridSize);
+    // insertGridEventToTheTimeLine(gridSize);
     shuffle(gridSize);
   });
 
