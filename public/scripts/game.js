@@ -99,7 +99,7 @@ $(document).ready(function () {
   // Change grid size
   $("#level").change("#level", function () {
     gridSize = $(this).val();
-    // insertGridEventToTheTimeLine(gridSize);
+    insertGridEventToTheTimeLine(gridSize);
     shuffle(gridSize);
   });
 
