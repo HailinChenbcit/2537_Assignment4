@@ -18,7 +18,7 @@ async function deleteItem() {
   var itemID = $(this).attr("id");
   $(this).parent().parent().remove();
   await $.ajax({
-    url: `https://infinite-ravine-07325.herokuapp.com/shoppingcart/remove/${itemID}`,
+    url: `https://obscure-tor-64520.herokuapp.com/shoppingcart/remove/${itemID}`,
     type: "delete",
     success: (e) => {
       console.log(e);

@@ -4,7 +4,7 @@ $(document).ready(function () {
     var name = $("#name").val();
 
     $.ajax({
-      url: `http://localhost:8000/edit/${name}/${email}`,
+      url: `https://obscure-tor-64520.herokuapp.com/edit/${name}/${email}`,
       method: "POST",
       success: () => {
         window.location.href = "/timeline";

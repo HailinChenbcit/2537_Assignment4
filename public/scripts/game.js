@@ -83,7 +83,7 @@ let time =
 
 function insertGridEventToTheTimeLine(gridSize) {
   $.ajax({
-    url: "http://localhost:8000/timeline/insert",
+    url: "https://obscure-tor-64520.herokuapp.com/timeline/insert",
     type: "put",
     data: {
       text: ` User changed the grid size to ${gridSize}`,
