@@ -1,21 +1,9 @@
-let cardOne, cardTwo;
+let firstCard, secondCard;
 let cardHasBeenFlipped = false;
 let outOfTime = false;
-let disableDeck = false;
+let matched = false;
 let matchPair = 0;
 let gridSize = 6;
-
-function shuffle(gridSize) {
-  matchPair = 0;
-  cardOne = cardTwo = "";
-  $(`#${cardOne.id}`).parent().removeClass("flip");
-  $(`#${cardTwo.id}`).parent().removeClass("flip");
-  var classList = $("#game_grid .card");
-  $.each(classList, function (index, item) {
-    let randomNum = Math.floor(Math.random() * gridSize);
-    item.style.order = randomNum;
-  });
-}
 
 // async function getCards() {
 //   var poke_ids = [];
@@ -38,6 +26,20 @@ function shuffle(gridSize) {
 //   $("main").html(result);
 // }
 
+// Randomize cards positions
+function shuffle(gridSize) {
+  matchPair = 0;
+  cardOne = cardTwo = "";
+  //   $(`#${cardOne.id}`).parent().removeClass("flip");
+  //   $(`#${cardTwo.id}`).parent().removeClass("flip");
+  var classList = $("#game_grid .card");
+  $.each(classList, function (index, item) {
+    $(item).parent().removeClass("flip");
+    let randomNum = Math.floor(Math.random() * gridSize);
+    item.style.order = randomNum;
+  });
+}
+
 function matchCards(cardOne, cardTwo) {
   if ($(`#${cardOne.id}`).attr("src") === $(`#${cardTwo.id}`).attr("src")) {
     matchPair++;
@@ -58,39 +60,48 @@ function matchCards(cardOne, cardTwo) {
   }
 }
 
-function setup() {
-  shuffle(gridSize);
-  $("#level").change("#level", function () {
-    gridSize = $(this).val();
-    shuffle(gridSize);
-  });
-
-  $(".card").on("click", function () {
-    let clickedCard = $(this);
-    console.log(clickedCard);
-    if (clickedCard !== cardOne && !disableDeck && !outOfTime) {
-      clickedCard.toggleClass("flip");
-
-      if (!cardOne) {
-        return (cardOne = clickedCard);
-      }
-      cardTwo = clickedCard;
-
-      disableDeck = true;
-
-      matchCards(cardOne, cardTwo);
+function flipCard() {
+  // 0/1 card were opened and the card didn't open, will reveal the card-front
+  if ($("#game_grid").find(".flip").length < 2 && !matched) {
+    if (!cardHasBeenFlipped) {
+      $(this).toggleClass("flip");
+      firstCard = $(this).find(".front_face")[0];
+      cardHasBeenFlipped = true;
     } else {
-      if (!outOfTime && !disableDeck) {
-        if (!cardHasBeenFlipped) {
-          firstCard = $(this).find(".front_face")[0];
-          cardHasBeenFlipped = true;
-        } else {
-          secondCard = $(this).find(".front_face")[0];
-          cardHasBeenFlipped = false;
-        }
+      $(this).toggleClass("flip");
+      secondCard = $(this).find(".front_face")[0];
+      cardHasBeenFlipped = false;
+
+      //   check if you have match
+      if (
+        $(`#${firstCard.id}`).attr("src") == $(`#${secondCard.id}`).attr("src")
+      ) {
+        console.log("A Match!");
+        $(`#${firstCard.id}`).parent().off("click");
+        $(`#${secondCard.id}`).parent().off("click");
+        matchPair++;
+        matched = false;
+      } else {
+        console.log("not a Match!");
+        setTimeout(() => {
+          $(`#${firstCard.id}`).parent().removeClass("flip");
+          $(`#${secondCard.id}`).parent().removeClass("flip");
+        }, 1000);
+        matched = false;
       }
     }
-  });
+  }
 }
 
-$(document).ready(setup);
+$(document).ready(function () {
+  shuffle(gridSize);
+
+  // Change grid size
+  //   $("#level").change("#level", function () {
+  //     gridSize = $(this).val();
+  //     console.log(gridSize)
+  //     shuffle(gridSize);
+  //   });
+
+  $(".card").on("click", flipCard);
+});

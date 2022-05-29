@@ -13,6 +13,7 @@
     <style>
       main {
         justify-items: center;
+        grid-template-columns: auto;
       }
     </style>
   </head>
@@ -31,15 +32,16 @@
     </nav>
     <main>
       <div>
-        <label for="level">Choose Difficulty</label>
+        <label for="level">Choose Grid Size</label>
         <select id="level">
-          <option value="4">easy</option>
-          <option value="6">medium</option>
-          <option value="12">hard</option>
+          <option value="4">2x2</option>
+          <option value="6">2x3</option>
+          <option value="12">3x4</option>
         </select>
       </div>
       <br>
-      <div class="timer">30</div>
+      <div class="timer">30</div> <span>seconds</span>
+      <br>
       <div id="game_grid">
         <div class="card">
           <img id="img1" class="front_face" src="1.png" alt="" />
