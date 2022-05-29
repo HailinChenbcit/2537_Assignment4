@@ -1,7 +1,6 @@
 let firstCard, secondCard;
 let cardHasBeenFlipped = false;
-let outOfTime = false;
-let matched = false;
+let lockBoard = false;
 let matchPair = 0;
 let gridSize = 6;
 
@@ -29,9 +28,6 @@ let gridSize = 6;
 // Randomize cards positions
 function shuffle(gridSize) {
   matchPair = 0;
-  cardOne = cardTwo = "";
-  //   $(`#${cardOne.id}`).parent().removeClass("flip");
-  //   $(`#${cardTwo.id}`).parent().removeClass("flip");
   var classList = $("#game_grid .card");
   $.each(classList, function (index, item) {
     $(item).parent().removeClass("flip");
@@ -40,57 +36,51 @@ function shuffle(gridSize) {
   });
 }
 
-function matchCards(cardOne, cardTwo) {
-  if ($(`#${cardOne.id}`).attr("src") === $(`#${cardTwo.id}`).attr("src")) {
-    matchPair++;
-    if (matchPair == gridSize) {
-      window.alert("You win!");
-      setTimeout(() => {
-        shuffle(gridSize);
-      }, 1000);
-    }
-    $(`#${cardOne.id}`).parent().off("click");
-    $(`#${cardTwo.id}`).parent().off("click");
-    return (disableDeck = false);
+function flipCard() {
+  if (lockBoard) return;
+  // prevent same card click twic
+  if ($(this).find(".front_face")[0] === firstCard) return;
+
+  $(this).toggleClass("flip");
+  if (!cardHasBeenFlipped) {
+    firstCard = $(this).find(".front_face")[0];
+    cardHasBeenFlipped = true;
   } else {
-    setTimeout(() => {
-      cardOne = cardTwo = "";
-      disableDeck = false;
-    }, 1000);
+    secondCard = $(this).find(".front_face")[0];
+    cardHasBeenFlipped = false;
+    checkMatch(firstCard, secondCard);
   }
 }
 
-function flipCard() {
-  // 0/1 card were opened and the card didn't open, will reveal the card-front
-  if ($("#game_grid").find(".flip").length < 2 && !matched) {
-    if (!cardHasBeenFlipped) {
-      $(this).toggleClass("flip");
-      firstCard = $(this).find(".front_face")[0];
-      cardHasBeenFlipped = true;
-    } else {
-      $(this).toggleClass("flip");
-      secondCard = $(this).find(".front_face")[0];
-      cardHasBeenFlipped = false;
-
-      //   check if you have match
-      if (
-        $(`#${firstCard.id}`).attr("src") == $(`#${secondCard.id}`).attr("src")
-      ) {
-        console.log("A Match!");
-        $(`#${firstCard.id}`).parent().off("click");
-        $(`#${secondCard.id}`).parent().off("click");
-        matchPair++;
-        matched = false;
-      } else {
-        console.log("not a Match!");
-        setTimeout(() => {
-          $(`#${firstCard.id}`).parent().removeClass("flip");
-          $(`#${secondCard.id}`).parent().removeClass("flip");
-        }, 1000);
-        matched = false;
-      }
-    }
+function checkMatch(firstCard, secondCard) {
+  // check if you have match
+  if ($(`#${firstCard.id}`).attr("src") == $(`#${secondCard.id}`).attr("src")) {
+    // add matched to the card div, disable cards
+    $(`#${firstCard.id}`).parent().addClass("matched");
+    $(`#${secondCard.id}`).parent().addClass("matched");
+    $(`#${firstCard.id}`).parent().off("click");
+    $(`#${secondCard.id}`).parent().off("click");
+    matchPair++;
+    reset();
+  } else {
+    lockBoard = true;
+    // unflip cards
+    setTimeout(() => {
+      $(`#${firstCard.id}`).parent().removeClass("flip");
+      $(`#${secondCard.id}`).parent().removeClass("flip");
+      lockBoard = false;
+    }, 1000);
   }
+  if (matchPair == gridSize) {
+    console.log("Win!");
+  }
+}
+
+function reset() {
+  lockBoard = false;
+  cardHasBeenFlipped = false;
+  firstCard = null;
+  secondCard = null;
 }
 
 $(document).ready(function () {
@@ -103,5 +93,5 @@ $(document).ready(function () {
   //     shuffle(gridSize);
   //   });
 
-  $(".card").on("click", flipCard);
+  $(".card").not(".matched").on("click", flipCard);
 });
