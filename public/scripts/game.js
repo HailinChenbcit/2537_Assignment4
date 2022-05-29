@@ -4,41 +4,33 @@ let lockBoard = false;
 let matchPair = 0;
 let gridSize = 6;
 
-// async function getCards() {
-//   var poke_ids = [];
-//   var result = "";
-//   for (i = 0; i < 2; i++) {
-//     result += "<div class='card'>";
-//     var poke_id = Math.floor(Math.random() * 600 + 1);
-//     await $.ajax({
-//       url: `https://pokeapi.co/api/v2/pokemon/${poke_id}`,
-//       type: "GET",
-//       success: function process(data) {
-//         result += `<div class="image_container">
-//                           <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${poke_id}.png">
-//                           </img>
-//                           `;
-//       },
-//     });
-//     result += "</div>";
-//   }
-//   $("main").html(result);
-// }
-
 // Randomize cards positions
 function shuffle(gridSize) {
   matchPair = 0;
-  var classList = $("#game_grid .card");
-  $.each(classList, function (index, item) {
-    $(item).parent().removeClass("flip");
-    let randomNum = Math.floor(Math.random() * gridSize);
-    item.style.order = randomNum;
-  });
+  if (gridSize == 6) {
+    $("#game_grid6").css("display", "");
+    $("#game_grid12").css("display", "none");
+    var classList = $("#game_grid6 .card");
+    $.each(classList, function (index, item) {
+      $(item).parent().removeClass("flip");
+      let randomNum = Math.floor(Math.random() * gridSize);
+      item.style.order = randomNum;
+    });
+  } else {
+    $("#game_grid6").css("display", "none");
+    $("#game_grid12").css("display", "");
+    var classList = $("#game_grid12 .card");
+    $.each(classList, function (index, item) {
+      $(item).parent().removeClass("flip");
+      let randomNum = Math.floor(Math.random() * gridSize);
+      item.style.order = randomNum;
+    });
+  }
 }
 
 function flipCard() {
   if (lockBoard) return;
-  // prevent same card click twic
+  // prevent same card click twice
   if ($(this).find(".front_face")[0] === firstCard) return;
 
   $(this).toggleClass("flip");
@@ -61,6 +53,9 @@ function checkMatch(firstCard, secondCard) {
     $(`#${firstCard.id}`).parent().off("click");
     $(`#${secondCard.id}`).parent().off("click");
     matchPair++;
+    if (matchPair == gridSize / 2) {
+      window.alert("You win!");
+    }
     reset();
   } else {
     lockBoard = true;
@@ -71,11 +66,9 @@ function checkMatch(firstCard, secondCard) {
       lockBoard = false;
     }, 1000);
   }
-  if (matchPair == gridSize) {
-    console.log("Win!");
-  }
 }
 
+// reset the board info
 function reset() {
   lockBoard = false;
   cardHasBeenFlipped = false;
@@ -87,11 +80,11 @@ $(document).ready(function () {
   shuffle(gridSize);
 
   // Change grid size
-  //   $("#level").change("#level", function () {
-  //     gridSize = $(this).val();
-  //     console.log(gridSize)
-  //     shuffle(gridSize);
-  //   });
+  $("#level").change("#level", function () {
+    gridSize = $(this).val();
+    console.log(gridSize)
+    shuffle(gridSize);
+  });
 
-  $(".card").not(".matched").on("click", flipCard);
+  $(".card").on("click", flipCard);
 });

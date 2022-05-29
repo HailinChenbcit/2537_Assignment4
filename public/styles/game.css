@@ -1,4 +1,15 @@
-#game_grid {
+#game_grid12 {
+  border: 1px black solid;
+  width: 700px;
+  height: 800px;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  perspective: 1000px;
+}
+
+#game_grid6 {
   border: 1px black solid;
   width: 600px;
   height: 400px;
