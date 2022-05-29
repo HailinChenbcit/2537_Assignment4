@@ -67,8 +67,21 @@ mongoose
 /**
  * Game Route
  */
-app.get("/game", (req, res) => {
-  res.render("game");
+app.get("/game", isAuth, async (req, res) => {
+  const allActs = await eventModel
+    .find({
+      owner: req.session.user._id,
+    })
+    .exec();
+  const allEvents = allActs.map((event) => {
+    const userEvent = {
+      _id: event._id,
+      text: event.text,
+      time: event.time,
+    };
+    return userEvent;
+  });
+  res.render("game", {allEvents});
 });
 /*
   admin page

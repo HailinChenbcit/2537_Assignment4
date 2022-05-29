@@ -4,7 +4,7 @@ let lockBoard = false;
 let matchPair = 0;
 let gridSize = 6;
 
-// Randomize cards positions
+// Randomize cards order
 function shuffle(gridSize) {
   matchPair = 0;
   if (gridSize == 6) {
@@ -76,13 +76,33 @@ function reset() {
   secondCard = null;
 }
 
+// gameevent timeline
+const d = new Date();
+var now = new Date(Date.now());
+let time =
+  d.toLocaleDateString() + " " + now.getHours() + ":" + now.getMinutes();
+
+function insertGridEventToTheTimeLine(gridSize) {
+  $.ajax({
+    url: "http://localhost:8000/timeline/insert",
+    type: "put",
+    data: {
+      text: ` User changed the grid size to ${gridSize}`,
+      time: `${time}`,
+    },
+    success: function (r) {
+      // console.log(r);
+    },
+  });
+}
+
 $(document).ready(function () {
   shuffle(gridSize);
 
   // Change grid size
   $("#level").change("#level", function () {
     gridSize = $(this).val();
-    console.log(gridSize)
+    insertGridEventToTheTimeLine(gridSize);
     shuffle(gridSize);
   });
 
